@@ -3,8 +3,8 @@ name: Jobs Crawler
 
 on:
   schedule:
-    # UTC 0시 = 한국 시간 오전 9시
-    - cron: '0 0 * * *'
+    # UTC 23시 = 한국 시간 오전 8시
+    - cron: '0 23 * * *'
   workflow_dispatch:
     # 수동 실행 가능
 
