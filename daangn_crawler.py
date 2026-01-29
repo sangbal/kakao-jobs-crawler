@@ -179,27 +179,19 @@ def main():
 
     if not filtered_jobs:
         print("조건에 맞는 채용 공고가 없습니다.")
+        sheet.clear()
+        setup_header(sheet)
         print("=== 크롤링 완료 ===")
         return
 
-    # 기존 공고 ID 확인 (아카이브 후 다시 조회)
-    existing_ids = get_existing_ids(sheet)
-    print(f"기존 등록 공고: {len(existing_ids)}건")
+    # 활성 공고 전체 덮어쓰기
+    header = ["공고ID", "직무명", "회사", "직군", "근무지", "고용형태", "등록일", "마감일", "URL", "수집일시"]
+    all_rows = [header] + [job_to_row(job) for job in filtered_jobs]
 
-    # 신규 공고 필터링
-    new_jobs = [job for job in filtered_jobs if str(job.get("ghId")) not in existing_ids]
-    print(f"신규 공고: {len(new_jobs)}건")
+    sheet.clear()
+    sheet.update(f"A1:J{len(all_rows)}", all_rows, value_input_option="USER_ENTERED")
 
-    if not new_jobs:
-        print("추가할 신규 공고가 없습니다.")
-        print("=== 크롤링 완료 ===")
-        return
-
-    # 신규 공고 추가
-    new_rows = [job_to_row(job) for job in new_jobs]
-    sheet.append_rows(new_rows, value_input_option="USER_ENTERED")
-
-    print(f"\n{len(new_rows)}건의 신규 공고가 추가되었습니다.")
+    print(f"\n{len(filtered_jobs)}건의 공고를 최신 데이터로 갱신했습니다.")
     print("=== 크롤링 완료 ===")
 
 
